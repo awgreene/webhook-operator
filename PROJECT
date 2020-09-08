@@ -1,3 +1,7 @@
 domain: operators.coreos.io
 repo: github.com/awgreene/webhook-operator
+resources:
+- group: webhook
+  kind: WebhookTest
+  version: v1
 version: "2"

@@ -1,0 +1,24 @@
+# permissions for end users to edit webhooktests.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: webhooktest-editor-role
+rules:
+- apiGroups:
+  - webhook.operators.coreos.io
+  resources:
+  - webhooktests
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - webhook.operators.coreos.io
+  resources:
+  - webhooktests/status
+  verbs:
+  - get
