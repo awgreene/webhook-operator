@@ -85,7 +85,11 @@ func (r *WebhookTest) validateWebhookTest() error {
 		allErrs = append(allErrs, field.Invalid(field.NewPath("spec").Child("schedule"), r.Spec.Valid, "Spec.Valid must be true"))
 	}
 
-	return apierrors.NewInvalid(
-		schema.GroupKind{Group: "test.operators.coreos.com", Kind: "WebhookTest"},
-		r.Name, allErrs)
+	if len(allErrs) != 0 {
+		return apierrors.NewInvalid(
+			schema.GroupKind{Group: "test.operators.coreos.com", Kind: "WebhookTest"},
+			r.Name, allErrs)
+	}
+
+	return nil
 }
