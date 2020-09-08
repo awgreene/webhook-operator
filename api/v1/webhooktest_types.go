@@ -28,8 +28,12 @@ type WebhookTestSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
-	// Foo is an example field of WebhookTest. Edit WebhookTest_types.go to remove/update
-	Foo string `json:"foo,omitempty"`
+	// Valid must be set to true or the validation webhook will reject the resource.
+	Valid bool `json:"valid"`
+
+	// Mutate is a field that will be set to true by the mutating webhook.
+	// +optional
+	Mutate bool `json:"mutate,omitempty"`
 }
 
 // WebhookTestStatus defines the observed state of WebhookTest
