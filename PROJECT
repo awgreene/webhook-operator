@@ -1,0 +1,3 @@
+domain: operators.coreos.io
+repo: github.com/awgreene/webhook-operator
+version: "2"
