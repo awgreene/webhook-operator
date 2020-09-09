@@ -4,4 +4,7 @@ resources:
 - group: webhook
   kind: WebhookTest
   version: v1
+- group: webhook
+  kind: WebhookTest
+  version: v2
 version: "2"

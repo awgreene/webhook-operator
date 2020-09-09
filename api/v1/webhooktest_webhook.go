@@ -28,6 +28,7 @@ import (
 
 // log is for logging in this package.
 var webhooktestlog = logf.Log.WithName("webhooktest-resource")
+var cronjoblog = logf.Log.WithName("cronjob-resource")
 
 func (r *WebhookTest) SetupWebhookWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewWebhookManagedBy(mgr).
