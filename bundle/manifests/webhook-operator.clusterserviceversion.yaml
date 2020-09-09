@@ -71,7 +71,7 @@ spec:
           - create
         serviceAccountName: default
       deployments:
-      - name: webhook-operator-controller-manager
+      - name: webhook-operator-webhook
         spec:
           replicas: 1
           selector:
@@ -113,16 +113,7 @@ spec:
                   requests:
                     cpu: 100m
                     memory: 20Mi
-                volumeMounts:
-                - mountPath: /tmp/k8s-webhook-server/serving-certs
-                  name: cert
-                  readOnly: true
               terminationGracePeriodSeconds: 10
-              volumes:
-              - name: cert
-                secret:
-                  defaultMode: 420
-                  secretName: webhook-server-cert
       permissions:
       - rules:
         - apiGroups:
@@ -176,7 +167,10 @@ spec:
     url: https://your.domain
   version: 0.0.1
   webhookdefinitions:
-  - admissionReviewVersions: null
+  - admissionReviewVersions:
+    - v1beta1
+    - v1
+    containerPort: 4343
     deploymentName: webhook-operator-webhook
     failurePolicy: Fail
     generateName: vwebhooktest.kb.io
@@ -190,10 +184,13 @@ spec:
       - UPDATE
       resources:
       - webhooktests
-    sideEffects: null
+    sideEffects: None
     type: ValidatingAdmissionWebhook
     webhookPath: /validate-webhook-operators-coreos-io-v1-webhooktest
-  - admissionReviewVersions: null
+  - admissionReviewVersions:
+    - v1beta1
+    - v1
+    containerPort: 4343
     deploymentName: webhook-operator-webhook
     failurePolicy: Fail
     generateName: mwebhooktest.kb.io
@@ -207,6 +204,6 @@ spec:
       - UPDATE
       resources:
       - webhooktests
-    sideEffects: null
+    sideEffects: None
     type: MutatingAdmissionWebhook
     webhookPath: /mutate-webhook-operators-coreos-io-v1-webhooktest
