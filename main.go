@@ -27,6 +27,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
 	webhookv1 "github.com/awgreene/webhook-operator/api/v1"
+	webhookv2 "github.com/awgreene/webhook-operator/api/v2"
 	"github.com/awgreene/webhook-operator/controllers"
 	// +kubebuilder:scaffold:imports
 )
@@ -40,6 +41,7 @@ func init() {
 	_ = clientgoscheme.AddToScheme(scheme)
 
 	_ = webhookv1.AddToScheme(scheme)
+	_ = webhookv2.AddToScheme(scheme)
 	// +kubebuilder:scaffold:scheme
 }
 

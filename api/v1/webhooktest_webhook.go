@@ -28,6 +28,7 @@ import (
 
 // log is for logging in this package.
 var webhooktestlog = logf.Log.WithName("webhooktest-resource")
+var cronjoblog = logf.Log.WithName("cronjob-resource")
 
 const (
 	WebhookPort     = 4343
