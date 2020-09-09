@@ -18,6 +18,7 @@ package v1
 
 import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"sigs.k8s.io/controller-runtime/pkg/conversion"
 )
 
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
@@ -36,6 +37,11 @@ type WebhookTestSpec struct {
 	Mutate bool `json:"mutate,omitempty"`
 }
 
+// Hub marks this type as a conversion hub.
+func (*WebhookTest) Hub() {}
+
+var _ conversion.Hub = &WebhookTest{}
+
 // WebhookTestStatus defines the observed state of WebhookTest
 type WebhookTestStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
@@ -43,6 +49,7 @@ type WebhookTestStatus struct {
 }
 
 // +kubebuilder:object:root=true
+// +kubebuilder:storageversion
 
 // WebhookTest is the Schema for the webhooktests API
 type WebhookTest struct {
