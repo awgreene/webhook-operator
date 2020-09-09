@@ -29,10 +29,25 @@ import (
 // log is for logging in this package.
 var webhooktestlog = logf.Log.WithName("webhooktest-resource")
 
+const (
+	WebhookPort     = 4343
+	WebhookCertDir  = "/apiserver.local.config/certificates"
+	WebhookCertName = "apiserver.crt"
+	WebhookKeyName  = "apiserver.key"
+)
+
 func (r *WebhookTest) SetupWebhookWithManager(mgr ctrl.Manager) error {
-	return ctrl.NewWebhookManagedBy(mgr).
-		For(r).
-		Complete()
+	bldr := ctrl.NewWebhookManagedBy(mgr).
+		For(r)
+
+	// Specify OLM CA Info
+	srv := mgr.GetWebhookServer()
+	srv.CertDir = WebhookCertDir
+	srv.CertName = WebhookCertName
+	srv.KeyName = WebhookKeyName
+	srv.Port = WebhookPort
+
+	return bldr.Complete()
 }
 
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
