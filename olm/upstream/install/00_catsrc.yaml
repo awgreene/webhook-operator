@@ -5,5 +5,5 @@ metadata:
   namespace: olm
 spec:
   displayName: Webhook Operator Catalog
-  image: quay.io/agreene/webhook-operator-index:0.0.1
+  image: quay.io/agreene/webhook-operator-index:0.0.2
   sourceType: grpc
