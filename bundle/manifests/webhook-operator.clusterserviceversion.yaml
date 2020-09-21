@@ -100,7 +100,7 @@ spec:
                 - --enable-leader-election
                 command:
                 - /manager
-                image: quay.io/agreene/webhook-operator:latest
+                image: quay.io/olmtest/webhook-operator:0.0.3
                 name: manager
                 ports:
                 - containerPort: 9443
@@ -145,9 +145,9 @@ spec:
         serviceAccountName: default
     strategy: deployment
   installModes:
-  - supported: true
+  - supported: false
     type: OwnNamespace
-  - supported: true
+  - supported: false
     type: SingleNamespace
   - supported: false
     type: MultiNamespace
@@ -170,7 +170,8 @@ spec:
   - admissionReviewVersions:
     - v1beta1
     - v1
-    containerPort: 4343
+    containerPort: 443
+    targetPort: 4343
     deploymentName: webhook-operator-webhook
     failurePolicy: Fail
     generateName: vwebhooktest.kb.io
@@ -190,7 +191,8 @@ spec:
   - admissionReviewVersions:
     - v1beta1
     - v1
-    containerPort: 4343
+    containerPort: 443
+    targetPort: 4343
     deploymentName: webhook-operator-webhook
     failurePolicy: Fail
     generateName: mwebhooktest.kb.io
@@ -207,3 +209,15 @@ spec:
     sideEffects: None
     type: MutatingAdmissionWebhook
     webhookPath: /mutate-webhook-operators-coreos-io-v1-webhooktest
+  - admissionReviewVersions:
+    - v1beta1
+    - v1
+    containerPort: 443
+    targetPort: 4343
+    deploymentName: webhook-operator-webhook
+    generateName: cwebhooktest.kb.io
+    sideEffects: None
+    type: ConversionWebhook
+    webhookPath: /convert
+    conversionCRDs:
+    - webhooktests.webhook.operators.coreos.io
