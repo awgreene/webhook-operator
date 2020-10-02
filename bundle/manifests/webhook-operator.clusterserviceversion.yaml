@@ -17,7 +17,7 @@ metadata:
         }
       ]
     capabilities: Basic Install
-    operators.operatorframework.io/builder: operator-sdk-v1.0.0
+    operators.operatorframework.io/builder: operator-sdk-v1.0.1
     operators.operatorframework.io/project_layout: go
   name: webhook-operator.v0.0.1
   namespace: placeholder
@@ -25,6 +25,9 @@ spec:
   apiservicedefinitions: {}
   customresourcedefinitions:
     owned:
+    - kind: WebhookTest
+      name: webhooktests.webhook.operators.coreos.io
+      version: v2
     - kind: WebhookTest
       name: webhooktests.webhook.operators.coreos.io
       version: v1
@@ -71,7 +74,7 @@ spec:
           - create
         serviceAccountName: default
       deployments:
-      - name: webhook-operator-webhook
+      - name: webhook-operator-controller-manager
         spec:
           replicas: 1
           selector:
@@ -85,22 +88,11 @@ spec:
             spec:
               containers:
               - args:
-                - --secure-listen-address=0.0.0.0:8443
-                - --upstream=http://127.0.0.1:8080/
-                - --logtostderr=true
-                - --v=10
-                image: gcr.io/kubebuilder/kube-rbac-proxy:v0.5.0
-                name: kube-rbac-proxy
-                ports:
-                - containerPort: 8443
-                  name: https
-                resources: {}
-              - args:
                 - --metrics-addr=127.0.0.1:8080
                 - --enable-leader-election
                 command:
                 - /manager
-                image: quay.io/olmtest/webhook-operator:0.0.3
+                image: quay.io/agreene/webhook-operator:latest
                 name: manager
                 ports:
                 - containerPort: 9443
@@ -113,7 +105,27 @@ spec:
                   requests:
                     cpu: 100m
                     memory: 20Mi
+                volumeMounts:
+                - mountPath: /tmp/k8s-webhook-server/serving-certs
+                  name: cert
+                  readOnly: true
+              - args:
+                - --secure-listen-address=0.0.0.0:8443
+                - --upstream=http://127.0.0.1:8080/
+                - --logtostderr=true
+                - --v=10
+                image: gcr.io/kubebuilder/kube-rbac-proxy:v0.5.0
+                name: kube-rbac-proxy
+                ports:
+                - containerPort: 8443
+                  name: https
+                resources: {}
               terminationGracePeriodSeconds: 10
+              volumes:
+              - name: cert
+                secret:
+                  defaultMode: 420
+                  secretName: webhook-server-cert
       permissions:
       - rules:
         - apiGroups:
@@ -145,9 +157,9 @@ spec:
         serviceAccountName: default
     strategy: deployment
   installModes:
-  - supported: false
+  - supported: true
     type: OwnNamespace
-  - supported: false
+  - supported: true
     type: SingleNamespace
   - supported: false
     type: MultiNamespace
@@ -167,12 +179,8 @@ spec:
     url: https://your.domain
   version: 0.0.1
   webhookdefinitions:
-  - admissionReviewVersions:
-    - v1beta1
-    - v1
-    containerPort: 443
-    targetPort: 4343
-    deploymentName: webhook-operator-webhook
+  - admissionReviewVersions: null
+    deploymentName: webhook-operator-controller-manager
     failurePolicy: Fail
     generateName: vwebhooktest.kb.io
     rules:
@@ -185,15 +193,11 @@ spec:
       - UPDATE
       resources:
       - webhooktests
-    sideEffects: None
+    sideEffects: null
     type: ValidatingAdmissionWebhook
     webhookPath: /validate-webhook-operators-coreos-io-v1-webhooktest
-  - admissionReviewVersions:
-    - v1beta1
-    - v1
-    containerPort: 443
-    targetPort: 4343
-    deploymentName: webhook-operator-webhook
+  - admissionReviewVersions: null
+    deploymentName: webhook-operator-controller-manager
     failurePolicy: Fail
     generateName: mwebhooktest.kb.io
     rules:
@@ -206,18 +210,6 @@ spec:
       - UPDATE
       resources:
       - webhooktests
-    sideEffects: None
+    sideEffects: null
     type: MutatingAdmissionWebhook
     webhookPath: /mutate-webhook-operators-coreos-io-v1-webhooktest
-  - admissionReviewVersions:
-    - v1beta1
-    - v1
-    containerPort: 443
-    targetPort: 4343
-    deploymentName: webhook-operator-webhook
-    generateName: cwebhooktest.kb.io
-    sideEffects: None
-    type: ConversionWebhook
-    webhookPath: /convert
-    conversionCRDs:
-    - webhooktests.webhook.operators.coreos.io
