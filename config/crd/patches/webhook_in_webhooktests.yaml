@@ -5,6 +5,7 @@ kind: CustomResourceDefinition
 metadata:
   name: webhooktests.webhook.operators.coreos.io
 spec:
+  preserveUnknownFields: false
   conversion:
     strategy: Webhook
     webhookClientConfig:
@@ -12,6 +13,6 @@ spec:
       # but we're going to set it later using the cert-manager (or potentially a patch if not using cert-manager)
       caBundle: Cg==
       service:
-        namespace: system
+        namespace: webhook-operator-system
         name: webhook-service
         path: /convert

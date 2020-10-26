@@ -1,0 +1,7 @@
+apiVersion: webhook.operators.coreos.io/v1
+kind: WebhookTest
+metadata:
+  name: webhooktest-sample
+  namespace: operators
+spec:
+  valid: false

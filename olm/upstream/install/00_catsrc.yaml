@@ -1,0 +1,9 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: CatalogSource
+metadata:
+  name: webhook-operator-catalog
+  namespace: olm
+spec:
+  displayName: Webhook Operator Catalog
+  image: quay.io/olmtest/webhook-operator-index:0.0.3
+  sourceType: grpc
